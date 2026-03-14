@@ -1,0 +1,61 @@
+# ============================================================
+# Texas Crime Geospatial Analysis – Python dependencies
+# ============================================================
+
+# Core scientific stack
+numpy>=1.24
+pandas>=2.0
+scipy>=1.11
+
+# Geospatial
+geopandas>=0.14
+shapely>=2.0
+pyproj>=3.6
+fiona>=1.9
+
+# Spatial statistics
+libpysal>=4.9
+esda>=2.5
+splot>=1.1.5
+
+# Visualization – interactive maps
+folium>=0.15
+branca>=0.7
+
+# Visualization – static plots
+matplotlib>=3.7
+seaborn>=0.13
+
+# Visualization – dashboard
+plotly>=5.18
+dash>=2.14
+dash-bootstrap-components>=1.5
+
+# Machine learning
+scikit-learn>=1.3
+joblib>=1.3
+
+# Temporal statistics (optional but recommended)
+pymannkendall>=1.4
+
+# Data fetching / serialisation
+requests>=2.31
+PyYAML>=6.0
+pyarrow>=14.0       # GeoParquet I/O
+
+# Jupyter notebook support
+jupyter>=1.0
+ipykernel>=6.0
+ipywidgets>=8.0
+
+# C++ extension build (pybind11)
+pybind11>=2.11
+cmake>=3.27         # installed via pip if not system-available
+
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+
+# Development / linting
+black>=23.0
+ruff>=0.1

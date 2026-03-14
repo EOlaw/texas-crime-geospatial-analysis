@@ -1,0 +1,76 @@
+# ── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.tox/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+
+# ── C++ build artefacts ───────────────────────────────────────────────────────
+*.o
+*.a
+*.lib
+*.dll
+*.dylib
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+install_manifest.txt
+cmake_install.cmake
+
+# ── Data (raw and large processed files) ─────────────────────────────────────
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/shapefiles/*
+!data/shapefiles/.gitkeep
+
+# ── Output files ─────────────────────────────────────────────────────────────
+outputs/maps/*
+!outputs/maps/.gitkeep
+outputs/figures/*
+!outputs/figures/.gitkeep
+outputs/reports/*
+!outputs/reports/.gitkeep
+
+# ── Environment ──────────────────────────────────────────────────────────────
+.env
+.env.*
+.venv/
+venv/
+env/
+*.key
+*.pem
+secrets.yaml
+config/secrets.yaml
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb~
+
+# ── IDE / OS ─────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.bak

@@ -1,0 +1,69 @@
+# config/settings.yaml
+# =====================
+# Central configuration for the Texas Crime Geospatial Analysis pipeline.
+
+# ── Data Sources ────────────────────────────────────────────────────────────
+data:
+  socrata_dataset_id: "xvp6-c9hn"
+  socrata_base_url:   "https://data.texas.gov/resource/"
+  fbi_base_url:       "https://api.usa.gov/crime/fbi/cde/"
+  census_tiger_base:  "https://www2.census.gov/geo/tiger/TIGER2022/"
+  texas_fips:         "48"
+  max_socrata_rows:   50000
+
+# ── Analysis Parameters ──────────────────────────────────────────────────────
+analysis:
+  year_min:    2018
+  year_max:    2023
+
+  kde:
+    grid_size:    300
+    hotspot_pct:  90.0      # percentile threshold for hotspot mask
+
+  dbscan:
+    eps_deg:   0.05          # ~5.5 km at Texas latitudes
+    min_pts:   10
+
+  kmeans:
+    k: 8
+    n_init: 20
+
+  hexbin:
+    cell_size: 0.25          # degrees
+
+  getis_ord:
+    weights_type:  "queen"
+    permutations:  999
+    significance:  0.05
+
+  ripley:
+    r_min:  0.01
+    r_max:  2.0
+    n_steps: 50
+
+# ── Model Parameters ─────────────────────────────────────────────────────────
+model:
+  random_forest:
+    n_estimators: 200
+    max_depth:    ~           # null = unlimited
+    cv_folds:     5
+
+  gradient_boosting:
+    n_estimators:   300
+    learning_rate:  0.05
+    max_depth:      4
+    cv_folds:       5
+
+# ── Visualisation ────────────────────────────────────────────────────────────
+visualization:
+  map_tiles:       "CartoDB positron"
+  texas_center:    [31.0, -99.5]
+  default_zoom:    6
+  max_map_points:  10000      # sub-sample threshold for Folium point maps
+  figure_dpi:      150
+
+# ── Dashboard ────────────────────────────────────────────────────────────────
+dashboard:
+  port:  8050
+  debug: false
+  host:  "0.0.0.0"
