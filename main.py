@@ -29,6 +29,27 @@ from pathlib import Path
 # Ensure src is importable when running from project root
 sys.path.insert(0, str(Path(__file__).parent))
 
+# ---------------------------------------------------------------------------
+# Python 3.13 / macOS: ResourceTracker.__del__ spuriously raises
+# ChildProcessError when worker processes spawned by esda/libpysal have
+# already been reaped by the time the interpreter shuts down.  Patch it out
+# so the harmless noise doesn't appear in the terminal.
+# ---------------------------------------------------------------------------
+try:
+    import multiprocessing.resource_tracker as _rt
+
+    _orig_stop_locked = _rt.ResourceTracker._stop_locked
+
+    def _patched_stop_locked(self) -> None:  # type: ignore[override]
+        try:
+            _orig_stop_locked(self)
+        except ChildProcessError:
+            pass
+
+    _rt.ResourceTracker._stop_locked = _patched_stop_locked  # type: ignore[method-assign]
+except Exception:
+    pass
+
 from src.python.utils import get_logger, get_data_dir, get_output_dir
 
 log = get_logger("main")

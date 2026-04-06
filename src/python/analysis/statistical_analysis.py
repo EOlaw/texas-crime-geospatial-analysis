@@ -46,7 +46,7 @@ def global_morans_i(
     permutations: int = 999,
 ) -> MoranResult:
     """Compute Global Moran's I spatial autocorrelation statistic."""
-    w = libpysal.weights.Queen.from_dataframe(polygon_gdf, silence_warnings=True)
+    w = libpysal.weights.Queen.from_dataframe(polygon_gdf, silence_warnings=True, use_index=False)
     w.transform = "r"
 
     mi = Moran(polygon_gdf[count_col].values, w, permutations=permutations)
@@ -142,11 +142,15 @@ def temporal_trend(
     except ImportError:
         # Simple linear regression fallback
         x = np.arange(len(ts))
-        slope, _, _, p, _ = stats.linregress(x, ts["count"].values)
-        mk_stat = float(slope)
-        mk_p    = float(p)
-        direction = ("increasing" if slope > 0 and p < 0.05 else
-                     "decreasing" if slope < 0 and p < 0.05 else "no trend")
+        y = ts["count"].values
+        if len(ts) < 2 or np.std(y) == 0:
+            mk_stat, mk_p, direction = 0.0, float("nan"), "no trend"
+        else:
+            slope, _, _, p, _ = stats.linregress(x, y)
+            mk_stat = float(slope)
+            mk_p    = float(p) if not np.isnan(p) else float("nan")
+            direction = ("increasing" if slope > 0 and p < 0.05 else
+                         "decreasing" if slope < 0 and p < 0.05 else "no trend")
 
     log.info("Trend analysis: %s (p=%.4f)", direction, mk_p)
     return TrendResult(df=ts,

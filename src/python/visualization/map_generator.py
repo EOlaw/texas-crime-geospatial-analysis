@@ -295,17 +295,27 @@ def hotspot_map(
     polygon_gdf = polygon_gdf.copy()
     polygon_gdf["spot_class"] = polygon_gdf.apply(classify, axis=1)
 
+    tooltip_fields = [f for f in [id_col, "spot_class", "gi_z_score"] if f in polygon_gdf.columns]
+    tooltip_aliases = {"spot_class": "Classification:", "gi_z_score": "Z-Score:", id_col: "Area:"}
+
     for _, row in polygon_gdf.iterrows():
         colour = _SPOT_COLOURS.get(row["spot_class"], "#F7F7F7")
+        props = {f: (float(row[f]) if isinstance(row[f], (int, float)) else str(row[f]))
+                 for f in tooltip_fields}
+        feature = {
+            "type": "Feature",
+            "geometry": row["geometry"].__geo_interface__,
+            "properties": props,
+        }
         folium.GeoJson(
-            row["geometry"].__geo_interface__,
+            feature,
             style_function=lambda x, c=colour: {
                 "fillColor": c, "color": "#555", "weight": 0.5, "fillOpacity": 0.75,
             },
             tooltip=folium.GeoJsonTooltip(
-                fields=[id_col, "spot_class", "gi_z_score"],
-                aliases=["Area:", "Classification:", "Z-Score:"],
-            ) if id_col in polygon_gdf.columns else None,
+                fields=tooltip_fields,
+                aliases=[tooltip_aliases.get(f, f + ":") for f in tooltip_fields],
+            ) if tooltip_fields else None,
         ).add_to(fmap)
 
     _add_legend(fmap, "Getis-Ord Gi*", _SPOT_COLOURS)

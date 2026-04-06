@@ -166,13 +166,15 @@ def compute_getis_ord(
 
     # Build spatial weights
     if weights_type == "queen":
-        w = libpysal.weights.Queen.from_dataframe(gdf, silence_warnings=True)
+        w = libpysal.weights.Queen.from_dataframe(gdf, silence_warnings=True, use_index=False)
     else:
-        w = libpysal.weights.Rook.from_dataframe(gdf, silence_warnings=True)
+        w = libpysal.weights.Rook.from_dataframe(gdf, silence_warnings=True, use_index=False)
 
+    # Fill diagonal with 1 before row-standardising so Gi* has a defined self-weight
+    libpysal.weights.fill_diagonal(w, 1)
     w.transform = "r"   # row-standardise
 
-    gi_star = G_Local(gdf[count_col].values, w, transform="R", permutations=999, star=True)
+    gi_star = G_Local(gdf[count_col].values, w, transform="R", permutations=999, star=None)
 
     gdf["gi_z_score"] = gi_star.Zs
     gdf["gi_p_value"] = gi_star.p_sim
@@ -228,7 +230,7 @@ def compute_lisa(
         LH = Low surrounded by High (spatial outlier)
     """
     gdf = polygon_gdf.copy()
-    w   = libpysal.weights.Queen.from_dataframe(gdf, silence_warnings=True)
+    w   = libpysal.weights.Queen.from_dataframe(gdf, silence_warnings=True, use_index=False)
     w.transform = "r"
 
     mi = Moran(gdf[count_col].values, w)
